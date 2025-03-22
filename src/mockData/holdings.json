@@ -1,0 +1,30 @@
+[
+    {
+      "id": "1",
+      "stockName": "HDFC Bank",
+      "quantity": 100,
+      "averagePrice": 1450,
+      "currentPrice": 1500,
+      "totalValue": 150000,
+      "profitLoss": 5000
+    },
+    {
+      "id": "2",
+      "stockName": "Infosys",
+      "quantity": 50,
+      "averagePrice": 1300,
+      "currentPrice": 1400,
+      "totalValue": 70000,
+      "profitLoss": 5000
+    },
+    {
+      "id": "3",
+      "stockName": "Reliance Industries",
+      "quantity": 25,
+      "averagePrice": 2300,
+      "currentPrice": 2400,
+      "totalValue": 60000,
+      "profitLoss": 2500
+    }
+  ]
+  

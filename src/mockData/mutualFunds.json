@@ -1,0 +1,30 @@
+[
+    {
+      "id": "1",
+      "name": "HDFC Top 100 Fund",
+      "category": "Large Cap",
+      "nav": 500.25,
+      "oneYearReturn": 12.5,
+      "threeYearReturn": 15.2,
+      "fiveYearReturn": 11.8
+    },
+    {
+      "id": "2",
+      "name": "Axis Bluechip Fund",
+      "category": "Large Cap",
+      "nav": 35.75,
+      "oneYearReturn": 10.8,
+      "threeYearReturn": 14.5,
+      "fiveYearReturn": 12.2
+    },
+    {
+      "id": "3",
+      "name": "SBI Small Cap Fund",
+      "category": "Small Cap",
+      "nav": 75.50,
+      "oneYearReturn": 18.3,
+      "threeYearReturn": 22.1,
+      "fiveYearReturn": 16.5
+    }
+  ]
+  

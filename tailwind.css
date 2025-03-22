@@ -1,0 +1,166 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .all-\[unset\] {
+    all: unset;
+  }
+}
+
+:root {
+  --apple-400: rgba(107, 189, 110, 1);
+  --bermuda-gray950: rgba(42, 49, 60, 1);
+  --body-regular-font-family: "Gilroy-Regular", Helvetica;
+  --body-regular-font-size: 14px;
+  --body-regular-font-style: normal;
+  --body-regular-font-weight: 400;
+  --body-regular-letter-spacing: 0px;
+  --body-regular-line-height: normal;
+  --body-semibold-font-family: "Gilroy-SemiBold", Helvetica;
+  --body-semibold-font-size: 14px;
+  --body-semibold-font-style: normal;
+  --body-semibold-font-weight: 600;
+  --body-semibold-letter-spacing: 0px;
+  --body-semibold-line-height: normal;
+  --dove-gray100: rgba(231, 231, 231, 1);
+  --dove-gray200: rgba(209, 209, 209, 1);
+  --dove-gray300: rgba(176, 176, 176, 1);
+  --dove-gray50: rgba(246, 246, 246, 1);
+  --dove-gray800: rgba(69, 69, 69, 1);
+  --dove-gray900: rgba(61, 61, 61, 1);
+  --headings-h5-semibold-font-family: "Gilroy-SemiBold", Helvetica;
+  --headings-h5-semibold-font-size: 28px;
+  --headings-h5-semibold-font-style: normal;
+  --headings-h5-semibold-font-weight: 600;
+  --headings-h5-semibold-letter-spacing: 0px;
+  --headings-h5-semibold-line-height: normal;
+  --headings-h6-semibold-font-family: "Gilroy-SemiBold", Helvetica;
+  --headings-h6-semibold-font-size: 24px;
+  --headings-h6-semibold-font-style: normal;
+  --headings-h6-semibold-font-weight: 600;
+  --headings-h6-semibold-letter-spacing: 0px;
+  --headings-h6-semibold-line-height: normal;
+  --mariner-800: rgba(0, 112, 223, 1);
+  --paragraph-regular-font-family: "Gilroy-Regular", Helvetica;
+  --paragraph-regular-font-size: 12px;
+  --paragraph-regular-font-style: normal;
+  --paragraph-regular-font-weight: 400;
+  --paragraph-regular-letter-spacing: 0px;
+  --paragraph-regular-line-height: normal;
+  --paragraph-semibold-font-family: "Gilroy-SemiBold", Helvetica;
+  --paragraph-semibold-font-size: 12px;
+  --paragraph-semibold-font-style: normal;
+  --paragraph-semibold-font-weight: 600;
+  --paragraph-semibold-letter-spacing: 0px;
+  --paragraph-semibold-line-height: normal;
+  --pizazz-200: rgba(255, 235, 168, 1);
+  --span-tags-regular-font-family: "Gilroy-Regular", Helvetica;
+  --span-tags-regular-font-size: 10px;
+  --span-tags-regular-font-style: normal;
+  --span-tags-regular-font-weight: 400;
+  --span-tags-regular-letter-spacing: 0px;
+  --span-tags-regular-line-height: normal;
+  --state-colorserror: rgba(235, 87, 87, 1);
+  --title-1-regular-font-family: "Gilroy-Regular", Helvetica;
+  --title-1-regular-font-size: 16px;
+  --title-1-regular-font-style: normal;
+  --title-1-regular-font-weight: 400;
+  --title-1-regular-letter-spacing: 0px;
+  --title-1-regular-line-height: normal;
+  --title-1-semibold-font-family: "Gilroy-SemiBold", Helvetica;
+  --title-1-semibold-font-size: 16px;
+  --title-1-semibold-font-style: normal;
+  --title-1-semibold-font-weight: 600;
+  --title-1-semibold-letter-spacing: 0px;
+  --title-1-semibold-line-height: normal;
+  --title-semibold-font-family: "Gilroy-SemiBold", Helvetica;
+  --title-semibold-font-size: 18px;
+  --title-semibold-font-style: normal;
+  --title-semibold-font-weight: 600;
+  --title-semibold-letter-spacing: 0px;
+  --title-semibold-line-height: normal;
+  --valencia-300: rgba(244, 175, 173, 1);
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+
+    --card: transparent;
+    --card-foreground: 222.2 47.4% 11.2%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 215 20.2% 65.1%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
+
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+
+    --card: transparent;
+    --card-foreground: 213 31% 91%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 1.2%;
+
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 216 34% 17%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}

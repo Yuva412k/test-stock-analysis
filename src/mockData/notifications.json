@@ -1,0 +1,21 @@
+[
+    {
+      "id": "1",
+      "message": "HDFC Bank stock price increased by 5%",
+      "read": false,
+      "timestamp": "2023-06-15T10:30:00Z"
+    },
+    {
+      "id": "2",
+      "message": "Your SIP investment in Axis Bluechip Fund is due tomorrow",
+      "read": false,
+      "timestamp": "2023-06-14T15:45:00Z"
+    },
+    {
+      "id": "3",
+      "message": "Quarterly portfolio report is now available",
+      "read": true,
+      "timestamp": "2023-06-10T09:00:00Z"
+    }
+  ]
+  
