@@ -1,84 +1,135 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import { api } from '../../utils/api';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import React, { useState } from "react";
+import { useQuery, useMutation } from "react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
+import { Label } from "../../components/ui/label";
+import { fetchUserProfile, updateUserProfile } from "../../utils/api";
+import { Loader } from "../../components/Loader/Loader";
 
 export const UserProfile: React.FC = () => {
-  const { user, logout } = useAuth();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const { data: profile, isLoading } = useQuery(
+    "userProfile",
+    fetchUserProfile
+  );
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-  useEffect(() => {
-    if (user) {
-      setName(user.name);
-      setEmail(user.email);
-    }
-  }, [user]);
+  const updateProfileMutation = useMutation(updateUserProfile, {
+    onSuccess: () => {
+      // Handle success (e.g., show a success message)
+    },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const response = await api.put('/user', { name, email, password });
-      setSuccess('Profile updated successfully');
-      setError('');
-    } catch (err) {
-      setError('Failed to update profile');
-      setSuccess('');
-    }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateProfileMutation.mutate(formData);
+  };
+
+  if (isLoading) return <Loader />;
+
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold">User Profile</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Name
-            </label>
-            <Input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+    <div className="space-y-6">
+      <Card className="bg-[#1b1a1a] text-white">
+        <CardContent className="p-6">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">User Profile</CardTitle>
+          </CardHeader>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-gray-400">Name</p>
+              <p className="font-semibold">{profile?.name}</p>
+            </div>
+            <div>
+              <p className="text-gray-400">Email</p>
+              <p className="font-semibold">{profile?.email}</p>
+            </div>
+            <div>
+              <p className="text-gray-400">Phone</p>
+              <p className="font-semibold">{profile?.phone}</p>
+            </div>
           </div>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              New Password (leave blank to keep current)
-            </label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          {success && <p className="text-green-500 text-sm">{success}</p>}
-          <Button type="submit">Update Profile</Button>
-        </form>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      <Card className="bg-[#1b1a1a] text-white">
+        <CardContent className="p-6">
+          <CardTitle className="text-2xl font-bold">Edit Profile</CardTitle>
+          <form onSubmit={handleSubmit}>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="bg-[#2a2a2a] text-white border-gray-600"
+                />
+              </div>
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="bg-[#2a2a2a] text-white border-gray-600"
+                />
+              </div>
+              <div>
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="bg-[#2a2a2a] text-white border-gray-600"
+                />
+              </div>
+              <div>
+                <Label htmlFor="password">New Password</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className="bg-[#2a2a2a] text-white border-gray-600"
+                />
+              </div>
+              <div>
+                <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  className="bg-[#2a2a2a] text-white border-gray-600"
+                />
+              </div>
+              <Button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700"
+              >
+                Update Profile
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };

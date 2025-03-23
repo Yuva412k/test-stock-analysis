@@ -1,33 +1,35 @@
-import React, { useState } from 'react';
-import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Card, CardContent } from '../ui/card';
-import { HeaderSection } from '../../screens/Portfolio/sections/HeaderSection/HeaderSection';
-
-
+import React from "react";
+import { Outlet } from "react-router-dom";
+import { HeaderSection } from "../../screens/Portfolio/sections/HeaderSection/HeaderSection";
+import { motion } from "framer-motion";
 
 export const Layout: React.FC = () => {
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+
+  const pageVariants = {
+    initial: { opacity: 0, y: 20 },
+    in: { opacity: 1, y: 0 },
+    out: { opacity: 0, y: -20 },
+  };
+
+  const pageTransition = {
+    type: "tween",
+    ease: "anticipate",
+    duration: 0.5,
+  };
 
   return (
     <div className="min-h-screen bg-[#171616]">
       <HeaderSection />
-      <main className="container mx-auto py-8">
-        {searchResults.length > 0 && (
-          <Card className="mb-8">
-            <CardContent>
-              <h2 className="text-xl font-semibold mb-4">Search Results</h2>
-              <ul>
-                {searchResults.map((result, index) => (
-                  <li key={index} className="mb-2">
-                    <span className="font-semibold">{result.name}</span> ({result.symbol}) - ${result.price.toFixed(2)}
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        )}
+      <motion.main
+        className="flex-grow p-4"
+        initial="initial"
+        animate="in"
+        exit="out"
+        variants={pageVariants}
+        transition={pageTransition}
+      >
         <Outlet />
-      </main>
+      </motion.main>
     </div>
   );
 };

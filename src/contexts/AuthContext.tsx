@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { api } from '../utils/api';
+import { authLogin, fetchUserProfile } from '../utils/api';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -11,7 +11,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(()=>{
+    const token = localStorage.getItem('token');
+    if (token) {
+      return true;
+    }
+
+    return false;
+  });
   const [user, setUser] = useState<any | null>(null);
 
   useEffect(() => {
@@ -19,8 +26,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (token) {
       setIsAuthenticated(true);
       // Fetch user data
-      api.get('/user').then(response => {
-        setUser(response.data);
+      fetchUserProfile().then(response => {
+        setUser(response);
       }).catch(() => {
         setIsAuthenticated(false);
         localStorage.removeItem('token');
@@ -30,13 +37,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (username: string, password: string) => {
     try {
-      // const response = await api.post('/login', { username, password });
-      // localStorage.setItem('token', response.data.token);
-      // setIsAuthenticated(true);
-      // setUser(response.data.user);
-      localStorage.setItem('token', "random");
+      const response = await authLogin({ username, password });
+      localStorage.setItem('token', response.data.token);
       setIsAuthenticated(true);
-      setUser({id: 1, name: "Random"});
+      setUser(response.data.user);
     } catch (error) {
       throw new Error('Invalid credentials');
     }

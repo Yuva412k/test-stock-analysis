@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Bell } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
-import { fetchMockData } from '../../utils/api';
+import { fetchNotifications } from '../../utils/api';
+import { Loader } from '../Loader/Loader';
+import { useQuery } from 'react-query';
 
 interface Notification {
   id: string;
@@ -12,16 +14,12 @@ interface Notification {
 }
 
 export const NotificationSystem: React.FC = () => {
+  const { data, isLoading } = useQuery('notifications', fetchNotifications);
+
+
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      const data = await fetchMockData('notifications');
-      setNotifications(data);
-    };
-    fetchNotifications();
-  }, []);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -30,6 +28,10 @@ export const NotificationSystem: React.FC = () => {
       n.id === id ? { ...n, read: true } : n
     ));
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="relative">

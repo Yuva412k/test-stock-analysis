@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LogOutIcon, UserIcon, SearchIcon } from 'lucide-react';
+import { LogOutIcon, UserIcon, SearchIcon, Wallet } from 'lucide-react';
 import { useAuth } from '../../../../contexts/AuthContext';
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from '../../../../components/ui/navigation-menu';
 import { Input } from '../../../../components/ui/input';
 import { Button } from '../../../../components/ui/button';
 import { NotificationSystem } from '../../../../components/NotificationSystem/NotificationSystem';
+import { Card, CardContent } from '../../../../components/ui/card';
 
 
 export const HeaderSection = () => {
@@ -99,14 +100,32 @@ export const HeaderSection = () => {
             </Button>
           </form>
           <NotificationSystem />
-          <Button variant="ghost" onClick={() => navigate('/profile')}>
+   
+          <Link to="/wallet" className="text-white hover:text-gray-300">
+              <Wallet className="h-6 w-6" />
+            </Link>
+            <Link to="/profile" className="text-white hover:text-gray-300">
             <UserIcon className="h-5 w-5 text-white" />
-          </Button>
+            </Link>
           <Button variant="ghost" onClick={handleLogout}>
             <LogOutIcon className="h-5 w-5 text-white" />
           </Button>
         </div>
       </div>
+      {searchResults.length > 0 && (
+          <Card className="mb-8">
+            <CardContent>
+              <h2 className="text-xl font-semibold mb-4">Search Results</h2>
+              <ul>
+                {searchResults.map((result, index) => (
+                  <li key={index} className="mb-2">
+                    <span className="font-semibold">{result.name}</span> ({result.symbol}) - ${result.price.toFixed(2)}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
     </header>
   );
 };

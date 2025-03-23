@@ -1,82 +1,112 @@
-import React, { useState, useEffect } from 'react';
-import { fetchMockData } from '../../utils/api';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import { Line } from 'react-chartjs-2';
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+import React, { useState } from 'react';
+import { useQuery } from 'react-query';
+import { Card, CardContent } from '../../components/ui/card';
+import { Select } from '../../components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { fetchFundAnalysis } from '../../utils/api';
+import { Loader } from '../../components/Loader/Loader';
 
 interface FundData {
-  id: string;
+  date: string;
+  value: number;
+  benchmark: number;
+}
+
+interface Fund {
+  id: number;
   name: string;
-  data: {
-    date: string;
-    value: number;
-  }[];
+  data: FundData[];
+  sharpeRatio: number;
+  standardDeviation: number;
+  alpha: number;  
+  beta: number;
 }
 
 export const FundAnalysis: React.FC = () => {
-  const [funds, setFunds] = useState<FundData[]>([]);
-  const [selectedFund, setSelectedFund] = useState<string>('');
+  const [selectedFund, setSelectedFund] = useState<number | null>(null);
+  const { data: funds, isLoading } = useQuery<Fund[]>('fundAnalysis', fetchFundAnalysis);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchMockData('fundAnalysis');
-      setFunds(data);
-      if (data.length > 0) {
-        setSelectedFund(data[0].id);
-      }
-    };
-    fetchData();
-  }, []);
+  const selectedFundData = funds?.find(fund => fund.id === selectedFund);
 
-  const selectedFundData = funds.find(fund => fund.id === selectedFund);
-
-  const chartData = {
-    labels: selectedFundData?.data.map(item => item.date) || [],
-    datasets: [
-      {
-        label: selectedFundData?.name || '',
-        data: selectedFundData?.data.map(item => item.value) || [],
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1
-      }
-    ]
-  };
-
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: 'Fund Performance Over Time',
-      },
-    },
-  };
+  if (isLoading) return <Loader />;
 
   return (
-    <Card className="w-full bg-[#1b1a1a] rounded-[11px]">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-dove-gray50">Fund Analysis</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Select value={selectedFund} onValueChange={setSelectedFund}>
-          <SelectTrigger className="w-[180px] mb-4">
-            <SelectValue placeholder="Select a fund" />
-          </SelectTrigger>
-          <SelectContent>
-            {funds.map(fund => (
-              <SelectItem key={fund.id} value={fund.id}>{fund.name}</SelectItem>
+    <Card className="w-full bg-[#1b1a1a] text-white">
+      <CardContent className="p-6">
+        <h2 className="text-2xl font-bold mb-4">Fund Analysis</h2>
+        <div className="mb-4">
+          <Select
+            value={selectedFund?.toString() || ''}
+            onValueChange={(value) => setSelectedFund(Number(value))}
+          >
+            {funds?.map(fund => (
+              <option key={fund.id} value={fund.id.toString()}>{fund.name}</option>
             ))}
-          </SelectContent>
-        </Select>
-        <div className="h-[400px]">
-          <Line options={chartOptions} data={chartData} />
+          </Select>
         </div>
+        {selectedFundData && (
+          <Tabs defaultValue="performance">
+            <TabsList>
+              <TabsTrigger value="performance">Performance</TabsTrigger>
+              <TabsTrigger value="riskMetrics">Risk Metrics</TabsTrigger>
+              <TabsTrigger value="comparison">Comparison</TabsTrigger>
+            </TabsList>
+            <TabsContent value="performance">
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={selectedFundData.data}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="value" stroke="#8884d8" name={selectedFundData.name} />
+                </LineChart>
+              </ResponsiveContainer>
+            </TabsContent>
+            <TabsContent value="riskMetrics">
+              <div className="grid grid-cols-2 gap-4">
+                <Card>
+                  <CardContent>
+                    <h3 className="font-semibold">Sharpe Ratio</h3>
+                    <p>{selectedFundData.sharpeRatio.toFixed(2)}</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent>
+                    <h3 className="font-semibold">Standard Deviation</h3>
+                    <p>{selectedFundData.standardDeviation.toFixed(2)}%</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent>
+                    <h3 className="font-semibold">Alpha</h3>
+                    <p>{selectedFundData.alpha.toFixed(2)}</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent>
+                    <h3 className="font-semibold">Beta</h3>
+                    <p>{selectedFundData.beta.toFixed(2)}</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+            <TabsContent value="comparison">
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={selectedFundData.data}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="value" stroke="#8884d8" name={selectedFundData.name} />
+                  <Line type="monotone" dataKey="benchmark" stroke="#82ca9d" name="Benchmark (e.g., NIFTY 50)" />
+                </LineChart>
+              </ResponsiveContainer>
+            </TabsContent>
+          </Tabs>
+        )}
       </CardContent>
     </Card>
   );
