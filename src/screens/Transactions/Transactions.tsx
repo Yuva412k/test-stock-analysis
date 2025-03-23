@@ -21,7 +21,13 @@ export const Transactions: React.FC = () => {
     transaction.stock.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (isLoading) return <Loader />;
+  if (isLoading) {
+    <>
+      <Loader />
+      {/* Add an empty container to maintain layout structure */}
+      <div className="relative w-full max-w-[1442px] bg-[#171616] rounded-[30px] overflow-hidden min-h-screen" />
+    </>;
+  }
 
   return (
     <Card className="w-full bg-[#1b1a1a] text-white">

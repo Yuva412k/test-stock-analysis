@@ -1,13 +1,34 @@
-import React, { useState } from 'react';
-import { useQuery } from 'react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
-import { Button } from '../../components/ui/button';
-import { Star, StarOff, ChevronDown, ChevronUp } from 'lucide-react';
-import { fetchMutualFunds, toggleWatchlist } from '../../utils/api';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Loader } from '../../components/Loader/Loader';
+import React, { useState } from "react";
+import { useQuery } from "react-query";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../components/ui/table";
+import { Button } from "../../components/ui/button";
+import { Star, StarOff, ChevronDown, ChevronUp } from "lucide-react";
+import { fetchMutualFunds, toggleWatchlist } from "../../utils/api";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { motion, AnimatePresence } from "framer-motion";
+import { Loader } from "../../components/Loader/Loader";
 
 interface MutualFund {
   id: number;
@@ -25,7 +46,10 @@ interface MutualFund {
 }
 
 export const MutualFunds: React.FC = () => {
-  const { data: funds, isLoading, refetch } = useQuery<MutualFund[]>('mutualFunds', fetchMutualFunds);
+  const { data, isLoading, refetch } = useQuery<{
+    funds: MutualFund[];
+    currencyCode: string;
+  }>("mutualFunds", fetchMutualFunds);
   const [expandedFund, setExpandedFund] = useState<number | null>(null);
 
   const handleToggleWatchlist = async (fundId: number) => {
@@ -33,8 +57,15 @@ export const MutualFunds: React.FC = () => {
     refetch();
   };
 
-  if (isLoading) return <Loader />;
-
+  if (isLoading)
+    return (
+      <>
+        <Loader />
+        {/* Add an empty container to maintain layout structure */}
+        <div className="relative w-full max-w-[1442px] bg-[#171616] rounded-[30px] overflow-hidden min-h-screen" />
+      </>
+    );
+    
   return (
     <Card className="w-full bg-[#1b1a1a] text-white">
       <CardHeader>
@@ -54,18 +85,41 @@ export const MutualFunds: React.FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {funds?.map(fund => (
+            {data?.funds?.map((fund) => (
               <React.Fragment key={fund.id}>
-                <TableRow className="cursor-pointer" onClick={() => setExpandedFund(expandedFund === fund.id ? null : fund.id)}>
+                <TableRow
+                  className="cursor-pointer"
+                  onClick={() =>
+                    setExpandedFund(expandedFund === fund.id ? null : fund.id)
+                  }
+                >
                   <TableCell>{fund.name}</TableCell>
                   <TableCell>₹{fund.nav.toFixed(2)}</TableCell>
-                  <TableCell className={fund.oneYearReturn >= 0 ? 'text-green-500' : 'text-red-500'}>
+                  <TableCell
+                    className={
+                      fund.oneYearReturn >= 0
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }
+                  >
                     {fund.oneYearReturn.toFixed(2)}%
                   </TableCell>
-                  <TableCell className={fund.threeYearReturn >= 0 ? 'text-green-500' : 'text-red-500'}>
+                  <TableCell
+                    className={
+                      fund.threeYearReturn >= 0
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }
+                  >
                     {fund.threeYearReturn.toFixed(2)}%
                   </TableCell>
-                  <TableCell className={fund.fiveYearReturn >= 0 ? 'text-green-500' : 'text-red-500'}>
+                  <TableCell
+                    className={
+                      fund.fiveYearReturn >= 0
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }
+                  >
                     {fund.fiveYearReturn.toFixed(2)}%
                   </TableCell>
                   <TableCell>₹{fund.investedAmount.toFixed(2)}</TableCell>
@@ -77,7 +131,11 @@ export const MutualFunds: React.FC = () => {
                         handleToggleWatchlist(fund.id);
                       }}
                     >
-                      {fund.isWatchlisted ? <Star className="text-yellow-500" /> : <StarOff />}
+                      {fund.isWatchlisted ? (
+                        <Star className="text-yellow-500" />
+                      ) : (
+                        <StarOff />
+                      )}
                     </Button>
                     {expandedFund === fund.id ? <ChevronUp /> : <ChevronDown />}
                   </TableCell>
@@ -86,26 +144,47 @@ export const MutualFunds: React.FC = () => {
                   {expandedFund === fund.id && (
                     <motion.tr
                       initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
+                      animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.3 }}
                     >
                       <TableCell colSpan={7}>
                         <div className="p-4 bg-[#2a2a2a]">
-                          <h3 className="text-xl font-semibold mb-4">{fund.name} - Detailed Information</h3>
+                          <h3 className="text-xl font-semibold mb-4">
+                            {fund.name} - Detailed Information
+                          </h3>
                           <div className="grid grid-cols-2 gap-4 mb-4">
                             <div>
-                              <p><strong>Fund Manager:</strong> {fund.fundManager}</p>
-                              <p><strong>Expense Ratio:</strong> {fund.expenseRatio}%</p>
-                              <p><strong>Risk Level:</strong> {fund.riskLevel}</p>
+                              <p>
+                                <strong>Fund Manager:</strong>{" "}
+                                {fund.fundManager}
+                              </p>
+                              <p>
+                                <strong>Expense Ratio:</strong>{" "}
+                                {fund.expenseRatio}%
+                              </p>
+                              <p>
+                                <strong>Risk Level:</strong> {fund.riskLevel}
+                              </p>
                             </div>
                             <div>
-                              <p><strong>1Y Return:</strong> {fund.oneYearReturn.toFixed(2)}%</p>
-                              <p><strong>3Y Return:</strong> {fund.threeYearReturn.toFixed(2)}%</p>
-                              <p><strong>5Y Return:</strong> {fund.fiveYearReturn.toFixed(2)}%</p>
+                              <p>
+                                <strong>1Y Return:</strong>{" "}
+                                {fund.oneYearReturn.toFixed(2)}%
+                              </p>
+                              <p>
+                                <strong>3Y Return:</strong>{" "}
+                                {fund.threeYearReturn.toFixed(2)}%
+                              </p>
+                              <p>
+                                <strong>5Y Return:</strong>{" "}
+                                {fund.fiveYearReturn.toFixed(2)}%
+                              </p>
                             </div>
                           </div>
-                          <h4 className="text-lg font-semibold mb-2">Historical Performance</h4>
+                          <h4 className="text-lg font-semibold mb-2">
+                            Historical Performance
+                          </h4>
                           <ResponsiveContainer width="100%" height={300}>
                             <LineChart data={fund.historicalPerformance}>
                               <CartesianGrid strokeDasharray="3 3" />
@@ -113,7 +192,12 @@ export const MutualFunds: React.FC = () => {
                               <YAxis />
                               <Tooltip />
                               <Legend />
-                              <Line type="monotone" dataKey="value" stroke="#8884d8" name="NAV" />
+                              <Line
+                                type="monotone"
+                                dataKey="value"
+                                stroke="#8884d8"
+                                name="NAV"
+                              />
                             </LineChart>
                           </ResponsiveContainer>
                         </div>

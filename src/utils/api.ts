@@ -8,8 +8,43 @@ const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || "http://localhost:3000/api",
 });
 
+// Fund data for the visualization
+const fundData = [
+  {
+    name: "Nippon Large Cap Fund - Direct Plan",
+    bgColor: "bg-[#f8d07b]",
+    color: "#f8d07b",
+  },
+  {
+    name: "Motilal Large Cap Fund - Direct Plan",
+    bgColor: "bg-[#0070df]",
+    color: "#0070df",
+  },
+  {
+    name: "HDFC Large Cap Fund",
+    bgColor: "bg-[#c56a09]",
+    color: "#c56a09",
+  },
+  {
+    name: "ICICI Prudential Midcap Fund",
+    bgColor: "bg-[#9e9d24]",
+    color: "#9e9d24",
+  },
+];
+
+// Stock data for the visualization
+const stockData = [
+  { name: "HDFC LTD.", color: "#36A2EB" },
+  { name: "RIL", color: "#FF6384" },
+  { name: "INFY", color: "#4BC0C0" },
+  { name: "TCS", color: "#FF9F40" },
+  { name: "HDFCBANK", color: "#9966FF" },
+  { name: "BHARTIARTL", color: "#FFCD56" },
+];
+
 // Mock data for local development
 const mockData = {
+  currencyCode: "₹",
   mutualFunds: [
     {
       id: 1,
@@ -65,7 +100,30 @@ const mockData = {
         period: "1D Return",
         isPositive: true,
       },
-      // Add more investment cards here
+      {
+        id: 1,
+        title: "Current Investment Value",
+        value: "5,75,000",
+        change: "+0.6%",
+        period: "1D Return",
+        isPositive: true,
+      },
+      {
+        id: 1,
+        title: "Current Investment Value",
+        value: "5,75,000",
+        change: "+0.6%",
+        period: "1D Return",
+        isPositive: true,
+      },
+      {
+        id: 1,
+        title: "Current Investment Value",
+        value: "5,75,000",
+        change: "+0.6%",
+        period: "1D Return",
+        isPositive: true,
+      },
     ],
   },
   performanceData: [
@@ -120,6 +178,104 @@ const mockData = {
       netAmount: 2462,
     },
   ],
+  sankeyData: {
+    datasets: [{
+      label: 'Fund Allocation',
+      data: [
+        { from: 'Nippon Large Cap Fund - Direct Plan', to: 'HDFC LTD.', flow: 20 },
+        { from: 'Nippon Large Cap Fund - Direct Plan', to: 'RIL', flow: 15 },
+        { from: 'Motilal Large Cap Fund - Direct Plan', to: 'INFY', flow: 25 },
+        { from: 'Motilal Large Cap Fund - Direct Plan', to: 'TCS', flow: 20 },
+        { from: 'HDFC Large Cap Fund', to: 'HDFCBANK', flow: 30 },
+        { from: 'ICICI Prudential Midcap Fund', to: 'BHARTIARTL', flow: 15 },
+      ],
+      colorFrom: (c) => fundData.find(f => f.name === c.dataset.data[c.dataIndex].from)?.color || '#000000',
+      colorTo: (c) => stockData.find(s => s.name === c.dataset.data[c.dataIndex].to)?.color || '#000000',
+    }]
+  },
+  sectorAllocation: [
+    {
+      id: 1,
+      name: "Financial",
+      amount: "₹1,95,000",
+      percentage: "34",
+      bgColor: "bg-[#9bb0c7]",
+      size: "col-span-2 row-span-1",
+      stocks: [
+        { name: "HDFC Bank", percentage: "15%", price: 1500 },
+        { name: "ICICI Bank", percentage: "10%", price: 800 },
+        { name: "SBI", percentage: "9", price: 400 },
+        { name: "ANS", percentage: "9", price: 400 },
+        { name: "LLB", percentage: "9", price: 400 },
+        { name: "LLB", percentage: "9", price: 400 },
+      ],
+    },
+    {
+      id: 2,
+      name: "Healthcare",
+      amount: "₹83,250",
+      percentage: "14.5",
+      bgColor: "bg-[#adb8cf]",
+      size: "col-span-1 row-span-1",
+      stocks: [
+        { name: "Sun Pharma", percentage: "7%", price: 750 },
+        { name: "Dr Reddy's", percentage: "4.5%", price: 3500 },
+        { name: "Cipla", percentage: "3%", price: 900 },
+      ],
+    },
+    {
+      id: 3,
+      name: "Technology",
+      amount: "₹1,11,000",
+      percentage: "19",
+      bgColor: "bg-[#c6c4d8]",
+      size: "col-span-1 row-span-1",
+      stocks: [
+        { name: "TCS", percentage: "10%", price: 3200 },
+        { name: "Infosys", percentage: "6%", price: 1400 },
+        { name: "Wipro", percentage: "3%", price: 400 },
+      ],
+    },
+    {
+      id: 4,
+      name: "Consumer Goods",
+      amount: "₹55,500",
+      percentage: "9.5",
+      bgColor: "bg-[#dad3e1]",
+      size: "col-span-1 row-span-1",
+      stocks: [
+        { name: "HUL", percentage: "5%", price: 2200 },
+        { name: "ITC", percentage: "3%", price: 215 },
+        { name: "Nestle", percentage: "1.5%", price: 18000 },
+      ],
+    },
+    {
+      id: 5,
+      name: "Energy",
+      amount: "₹55,500",
+      percentage: "9.5",
+      bgColor: "bg-[#ebe2ea]",
+      size: "col-span-1 row-span-1",
+      stocks: [
+        { name: "Reliance", percentage: "6%", price: 2400 },
+        { name: "ONGC", percentage: "2%", price: 150 },
+        { name: "NTPC", percentage: "1.5%", price: 120 },
+      ],
+    },
+    {
+      id: 6,
+      name: "Other Sectors",
+      amount: "₹55,500",
+      percentage: "9.5",
+      bgColor: "bg-[#f8f3f5]",
+      size: "col-span-1 row-span-1",
+      stocks: [
+        { name: "Bharti Airtel", percentage: "3%", price: 700 },
+        { name: "L&T", percentage: "3.5%", price: 1600 },
+        { name: "Asian Paints", percentage: "3%", price: 3000 },
+      ],
+    },
+  ]
 };
 
 // Helper function to simulate API delay
@@ -129,7 +285,7 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export const fetchMutualFunds = async () => {
   if (process.env.VITE_NODE_ENV === "development") {
     await delay(500); // Simulate API delay
-    return mockData.mutualFunds;
+    return { funds: mockData.mutualFunds, currencyCode: mockData.currencyCode };
   }
   const response = await api.get("/mutual-funds");
   return response.data;
@@ -154,7 +310,7 @@ export const toggleWatchlist = async (fundId: number) => {
 export const fetchHoldings = async () => {
   if (process.env.VITE_NODE_ENV === "development") {
     await delay(500); // Simulate API delay
-    return mockData.holdings;
+    return  mockData.holdings;
   }
   const response = await api.get("/holdings");
   return response.data;
@@ -345,5 +501,25 @@ export const fetchFundAnalysis = async () => {
   return response.data;
 };
 
+
+// Fetch Sankey Data
+export const fetchOverviewSectionData= async () => {
+  if (process.env.VITE_NODE_ENV === 'development') {
+    await delay(500);
+    return {sankeyData: mockData.sankeyData, fundData, stockData};
+  }
+  const response = await api.get('/sankey-data');
+  return response.data;
+};
+
+// Fetch Sector Allocation
+export const fetchSectorAllocation = async () => {
+  if (process.env.VITE_NODE_ENV === 'development') {
+    await delay(500);
+    return { data: mockData.sectorAllocation, currencyCode: mockData.currencyCode };
+  }
+  const response = await api.get('/sector-allocation');
+  return response.data;
+};
 
 export default api;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { TrendingDownIcon, TrendingUpIcon } from "lucide-react";
 import {
@@ -36,16 +36,14 @@ import {
   fetchPortfolioData,
   fetchPerformanceData,
   fetchCompositionData,
+  fetchOverviewSectionData,
 } from "../../utils/api";
 import { Loader } from "../../components/Loader/Loader";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
 export const Portfolio = (): JSX.Element => {
-  const { data: portfolioData, isLoading: isPortfolioLoading } = useQuery(
-    "portfolioData",
-    fetchPortfolioData
-  );
+
   const { data: performanceData, isLoading: isPerformanceLoading } = useQuery(
     "performanceData",
     fetchPerformanceData
@@ -55,13 +53,56 @@ export const Portfolio = (): JSX.Element => {
     fetchCompositionData
   );
 
+  const { data: portfolioData, isLoading: isPortfolioLoading } = useQuery(
+    "portfolioData",
+    fetchPortfolioData
+  );
+  const { data: overviewSectionData, isLoading: isSankeyLoading } = useQuery(
+    "overviewSecondData",
+    fetchOverviewSectionData
+  );
+  const [activeTab, setActiveTab] = useState("pha");
+
+  if (isPortfolioLoading || isSankeyLoading) {
+    <>
+      <Loader />
+      {/* Add an empty container to maintain layout structure */}
+      <div className="relative w-full max-w-[1442px] bg-[#171616] rounded-[30px] overflow-hidden min-h-screen" />
+    </>;
+  }
+
+
   if (isPortfolioLoading || isPerformanceLoading || isCompositionLoading) {
     return <Loader />;
   }
 
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "pha":
+        return <div>PHA Content</div>;
+      case "fundAnalysis":
+        return <div>Fund Analysis Content</div>;
+      case "holdings":
+        return <div>Holdings Content</div>;
+      case "transactions":
+        return <div>Transactions Content</div>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="relative w-full max-w-[1442px] bg-[#171616] rounded-[30px] overflow-hidden">
-      <InvestmentPerformanceSection />
+
+    <div className="flex flex-col md:flex-row">
+        <div className="w-full md:w-1/4 bg-[#1b1a1a] p-4">
+          <InvestmentPerformanceSection
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+      </div>
+      <div className="w-full md:w-3/4 p-4">
       <SectorAnalysisSection />
 
       {/* Investment Cards */}
@@ -206,7 +247,9 @@ export const Portfolio = (): JSX.Element => {
       </div>
 
       <SectorAllocationSection />
-      <PortfolioOverviewSection />
-    </div>
+      <PortfolioOverviewSection overviewSectionData={overviewSectionData} />
+        </div>
+        </div>
+      </div>
   );
 };

@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { useQuery, useMutation } from "react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { Label } from "../../components/ui/label";
@@ -36,7 +41,14 @@ export const UserProfile: React.FC = () => {
     updateProfileMutation.mutate(formData);
   };
 
-  if (isLoading) return <Loader />;
+  if (isLoading)
+    return (
+      <>
+        <Loader />
+        {/* Add an empty container to maintain layout structure */}
+        <div className="relative w-full max-w-[1442px] bg-[#171616] rounded-[30px] overflow-hidden min-h-screen" />
+      </>
+    );
 
   return (
     <div className="space-y-6">

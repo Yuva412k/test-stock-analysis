@@ -1,62 +1,28 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Badge } from "../../../../components/ui/badge";
 import { Card, CardContent } from "../../../../components/ui/card";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { Chart } from 'react-chartjs-2';
-import { SankeyController, Flow } from 'chartjs-chart-sankey';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Chart } from "react-chartjs-2";
+import { SankeyController, Flow } from "chartjs-chart-sankey";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, SankeyController, Flow);
-
-// Fund data for the visualization
-const fundData = [
-  {
-    name: "Nippon Large Cap Fund - Direct Plan",
-    bgColor: "bg-[#f8d07b]",
-    color: "#f8d07b",
-  },
-  {
-    name: "Motilal Large Cap Fund - Direct Plan",
-    bgColor: "bg-[#0070df]",
-    color: "#0070df",
-  },
-  {
-    name: "HDFC Large Cap Fund",
-    bgColor: "bg-[#c56a09]",
-    color: "#c56a09",
-  },
-  {
-    name: "ICICI Prudential Midcap Fund",
-    bgColor: "bg-[#9e9d24]",
-    color: "#9e9d24",
-  },
-];
-
-// Stock data for the visualization
-const stockData = [
-  { name: "HDFC LTD.", color: "#36A2EB" },
-  { name: "RIL", color: "#FF6384" },
-  { name: "INFY", color: "#4BC0C0" },
-  { name: "TCS", color: "#FF9F40" },
-  { name: "HDFCBANK", color: "#9966FF" },
-  { name: "BHARTIARTL", color: "#FFCD56" },
-];
-
-// Sankey chart data
-const sankeyData = {
-  datasets: [{
-    label: 'Fund Allocation',
-    data: [
-      { from: 'Nippon Large Cap Fund - Direct Plan', to: 'HDFC LTD.', flow: 20 },
-      { from: 'Nippon Large Cap Fund - Direct Plan', to: 'RIL', flow: 15 },
-      { from: 'Motilal Large Cap Fund - Direct Plan', to: 'INFY', flow: 25 },
-      { from: 'Motilal Large Cap Fund - Direct Plan', to: 'TCS', flow: 20 },
-      { from: 'HDFC Large Cap Fund', to: 'HDFCBANK', flow: 30 },
-      { from: 'ICICI Prudential Midcap Fund', to: 'BHARTIARTL', flow: 15 },
-    ],
-    colorFrom: (c) => fundData.find(f => f.name === c.dataset.data[c.dataIndex].from)?.color || '#000000',
-    colorTo: (c) => stockData.find(s => s.name === c.dataset.data[c.dataIndex].to)?.color || '#000000',
-  }]
-};
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  SankeyController,
+  Flow
+);
 
 const chartOptions = {
   responsive: true,
@@ -69,13 +35,23 @@ const chartOptions = {
         },
         label: (context) => {
           return `Flow: ${context.raw.flow}`;
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 };
 
-export const PortfolioOverviewSection = (): JSX.Element => {
+export const PortfolioOverviewSection = ({
+  overviewSectionData,
+}: {
+  overviewSectionData: any;
+}): JSX.Element => {
+  const { sankeyData, stockData, fundData } = useMemo(() => {
+    if (!overviewSectionData) {
+      return {};
+    }
+    return overviewSectionData;
+  }, [overviewSectionData]);
   return (
     <Card className="w-full h-[680px] bg-[#1b1a1a] rounded-[11px] relative">
       <CardContent className="p-7">
@@ -120,15 +96,10 @@ export const PortfolioOverviewSection = (): JSX.Element => {
           </div>
         </div>
 
-        {/* Sankey Chart */}
         <div className="mt-12 relative flex justify-center">
-          <div className="w-[851px] h-[447px]">
-            <Chart type="sankey" data={sankeyData} options={chartOptions} />
-          </div>
-
-          {/* Fund Cards - Left Side */}
-          <div className="absolute left-[-143px] top-[33px] space-y-[28px]">
-            {fundData.map((fund, index) => (
+      {/* Fund Cards - Left Side */}
+      <div className=" left-[-143px] top-[33px] space-y-[28px]">
+            {fundData?.map((fund, index) => (
               <Card
                 key={index}
                 className={`w-[102px] h-[72px] rounded-[7px] ${fund.bgColor} opacity-40`}
@@ -142,18 +113,24 @@ export const PortfolioOverviewSection = (): JSX.Element => {
             ))}
           </div>
 
+        {/* Sankey Chart */}
+          <div className="">
+            {sankeyData && (
+              <Chart type="sankey" data={sankeyData} options={chartOptions} />
+            )}
+          </div>
+
           {/* Stock Labels - Right Side */}
-          <div className="absolute right-[-130px] top-[33px] space-y-[42px]">
-            {stockData.map((stock, index) => (
-              <Badge
+          <div className="right-[-130px] top-[33px] space-y-[42px]">
+            {stockData?.map((stock, index) => (
+              <div
                 key={index}
-                variant="outline"
-                className="w-[102px] h-7 rounded-[21px] bg-transparent flex items-center justify-center shadow-[4px_4px_10px_#00000040,-4px_-4px_10px_#00000040]"
+                className="w-[102px] h-7 rounded-[21px] bg-transparent flex items-center justify-center"
               >
                 <span className="font-paragraph-regular text-dove-gray300">
                   {stock.name}
                 </span>
-              </Badge>
+              </div>
             ))}
           </div>
         </div>

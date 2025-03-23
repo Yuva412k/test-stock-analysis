@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../../../../components/ui/button";
 
-export const InvestmentPerformanceSection = (): JSX.Element => {
+export const InvestmentPerformanceSection = ({activeTab, setActiveTab} : {activeTab:string, setActiveTab: (value: string)=>void}): JSX.Element => {
   // Navigation menu items data
   const menuItems = [
     { id: 1, label: "PHA", isActive: true },
@@ -18,10 +18,13 @@ export const InvestmentPerformanceSection = (): JSX.Element => {
             key={item.id}
             variant="ghost"
             className={`flex h-10 w-40 justify-start px-[22px] py-[11px] ${
-              item.isActive
+              activeTab === item.label.toLowerCase().replace(" ", "")
                 ? "bg-dove-gray900 rounded-md"
                 : "rounded bg-transparent"
             }`}
+            onClick={() =>
+              setActiveTab(item.label.toLowerCase().replace(" ", ""))
+            }
           >
             <span
               className={`${

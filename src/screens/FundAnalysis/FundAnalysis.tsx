@@ -1,11 +1,36 @@
-import React, { useState } from 'react';
-import { useQuery } from 'react-query';
-import { Card, CardContent } from '../../components/ui/card';
-import { Select } from '../../components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { fetchFundAnalysis } from '../../utils/api';
-import { Loader } from '../../components/Loader/Loader';
+import React, { useState } from "react";
+import { useQuery } from "react-query";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../components/ui/tabs";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { fetchFundAnalysis } from "../../utils/api";
+import { Loader } from "../../components/Loader/Loader";
 
 interface FundData {
   date: string;
@@ -19,30 +44,49 @@ interface Fund {
   data: FundData[];
   sharpeRatio: number;
   standardDeviation: number;
-  alpha: number;  
+  alpha: number;
   beta: number;
 }
 
 export const FundAnalysis: React.FC = () => {
   const [selectedFund, setSelectedFund] = useState<number | null>(null);
-  const { data: funds, isLoading } = useQuery<Fund[]>('fundAnalysis', fetchFundAnalysis);
+  const { data: funds, isLoading } = useQuery<Fund[]>(
+    "fundAnalysis",
+    fetchFundAnalysis
+  );
 
-  const selectedFundData = funds?.find(fund => fund.id === selectedFund);
+  const selectedFundData = funds?.find((fund) => fund.id === selectedFund);
 
-  if (isLoading) return <Loader />;
+  if (isLoading)
+    return (
+      <>
+        <Loader />
+        {/* Add an empty container to maintain layout structure */}
+        <div className="relative w-full max-w-[1442px] bg-[#171616] rounded-[30px] overflow-hidden min-h-screen" />
+      </>
+    );
 
   return (
     <Card className="w-full bg-[#1b1a1a] text-white">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">Fund Analysis</CardTitle>
+      </CardHeader>
       <CardContent className="p-6">
-        <h2 className="text-2xl font-bold mb-4">Fund Analysis</h2>
         <div className="mb-4">
           <Select
-            value={selectedFund?.toString() || ''}
+            value={selectedFund?.toString() || ""}
             onValueChange={(value) => setSelectedFund(Number(value))}
           >
-            {funds?.map(fund => (
-              <option key={fund.id} value={fund.id.toString()}>{fund.name}</option>
-            ))}
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select a fund" />
+            </SelectTrigger>
+            <SelectContent>
+              {funds?.map((fund) => (
+                <SelectItem key={fund.id} value={fund.id.toString()}>
+                  {fund.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
         </div>
         {selectedFundData && (
@@ -60,7 +104,12 @@ export const FundAnalysis: React.FC = () => {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="value" stroke="#8884d8" name={selectedFundData.name} />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#8884d8"
+                    name={selectedFundData.name}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </TabsContent>
@@ -100,8 +149,18 @@ export const FundAnalysis: React.FC = () => {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="value" stroke="#8884d8" name={selectedFundData.name} />
-                  <Line type="monotone" dataKey="benchmark" stroke="#82ca9d" name="Benchmark (e.g., NIFTY 50)" />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#8884d8"
+                    name={selectedFundData.name}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="benchmark"
+                    stroke="#82ca9d"
+                    name="Benchmark"
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </TabsContent>
