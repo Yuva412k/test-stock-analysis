@@ -1,0 +1,30 @@
+[
+    {
+      "id": "1",
+      "date": "2023-05-01",
+      "type": "buy",
+      "stockName": "HDFC Bank",
+      "quantity": 10,
+      "price": 1450,
+      "total": 14500
+    },
+    {
+      "id": "2",
+      "date": "2023-05-15",
+      "type": "sell",
+      "stockName": "Infosys",
+      "quantity": 5,
+      "price": 1400,
+      "total": 7000
+    },
+    {
+      "id": "3",
+      "date": "2023-06-01",
+      "type": "buy",
+      "stockName": "Reliance Industries",
+      "quantity": 5,
+      "price": 2300,
+      "total": 11500
+    }
+  ]
+  

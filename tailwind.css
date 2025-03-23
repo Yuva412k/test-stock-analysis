@@ -157,6 +157,11 @@
 @layer base {
   * {
     @apply border-border;
+    color: #fff;
+  }
+
+  input[type='number'] , input[type='select'] {
+    color: #000 !important;
   }
 
   body {

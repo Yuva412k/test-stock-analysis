@@ -1,9 +1,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { Portfolio } from "./screens/Portfolio";
+import App from "./App";
 
 createRoot(document.getElementById("app") as HTMLElement).render(
   <StrictMode>
-    <Portfolio />
+    <App />
   </StrictMode>,
 );

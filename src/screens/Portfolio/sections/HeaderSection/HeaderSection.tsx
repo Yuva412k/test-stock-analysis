@@ -1,88 +1,110 @@
-import { LogOutIcon } from "lucide-react";
-import React from "react";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from "../../../../components/ui/navigation-menu";
+import React, { useState } from 'react';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { LogOutIcon, UserIcon, SearchIcon } from 'lucide-react';
+import { useAuth } from '../../../../contexts/AuthContext';
+import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from '../../../../components/ui/navigation-menu';
+import { Input } from '../../../../components/ui/input';
+import { Button } from '../../../../components/ui/button';
+import { NotificationSystem } from '../../../../components/NotificationSystem/NotificationSystem';
 
-export const HeaderSection = (): JSX.Element => {
-  // Navigation menu items data
+
+export const HeaderSection = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+
   const menuItems = [
-    { name: "Home", isActive: false },
-    { name: "Portfolio", isActive: true },
-    { name: "Mutual Funds", isActive: false },
-    { name: "Tools", isActive: false },
-    { name: "Transactions", isActive: false },
+    { path: '/portfolio', name: 'Portfolio' },
+    { path: '/mutual-funds', name: 'Mutual Funds' },
+    { path: '/fund-analysis', name: 'Fund Analysis' },
+    { path: '/holdings', name: 'Holdings' },
+    { path: '/transactions', name: 'Transactions' },
+    { path: '/tools', name: 'Tools' },
   ];
 
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Mock search results
+    const results = [
+      { name: 'Apple Inc.', symbol: 'AAPL', price: 150.25 },
+      { name: 'Microsoft Corporation', symbol: 'MSFT', price: 300.50 },
+      { name: 'Amazon.com Inc.', symbol: 'AMZN', price: 3300.75 },
+    ];
+    setSearchResults(results);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
-    <header className="w-full h-20 bg-[#1b1a1a] relative">
+    <header className="w-full h-20 bg-[#1b1a1a]">
       <div className="flex items-center h-full px-12">
         {/* Logo */}
-        <img
-          className="w-[26px] h-[38px] mr-32"
-          alt="Logo"
-          src="https://c.animaapp.com/m8kgn877BAe2ZS/img/group-47952.png"
-        />
+        <Link to="/" className="mr-32">
+          <img
+            className="w-[26px] h-[38px]"
+            alt="Logo"
+            src="https://c.animaapp.com/m8kgn877BAe2ZS/img/group-47952.png"
+          />
+        </Link>
 
         {/* Navigation Menu */}
         <NavigationMenu className="max-w-none">
-          <NavigationMenuList className="flex space-x-10">
-            {menuItems.map((item, index) => (
-              <NavigationMenuItem key={index}>
-                <NavigationMenuLink
-                  className={`font-${item.isActive ? "body-semibold" : "body-regular"} text-${item.isActive ? "dove-gray50" : "dove-gray200"} text-[14px] relative ${item.isActive ? "after:absolute after:w-16 after:h-0.5 after:bg-[#0070df] after:rounded-[10px] after:bottom-[-20px] after:left-[-8px]" : ""}`}
-                >
-                  {item.name}
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            ))}
+          <NavigationMenuList className="flex gap-10">
+            {menuItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <NavigationMenuItem key={item.path}>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      to={item.path}
+                      className={`${
+                        isActive ? 'font-semibold' : 'font-normal'
+                      } ${
+                        isActive ? 'text-gray-50' : 'text-gray-200'
+                      } text-sm relative group`}
+                    >
+                      {item.name}
+                      {isActive && (
+                        <div className="absolute w-16 h-0.5 bg-[#0070df] rounded-[10px] bottom-[-24px] left-1/2 -translate-x-1/2" />
+                      )}
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              );
+            })}
           </NavigationMenuList>
         </NavigationMenu>
 
-        {/* Right side icons */}
-        <div className="ml-auto flex items-center space-x-8">
-          <div className="flex items-center space-x-4">
-            {/* Notification icons */}
-            <div className="relative">
-              <img
-                className="w-[21px] h-[21px]"
-                alt="Notification icon"
-                src="https://c.animaapp.com/m8kgn877BAe2ZS/img/clip-path-group.png"
-              />
-              <img
-                className="absolute w-[7px] h-[7px] top-0 left-[79px]"
-                alt="Notification indicator"
-                src="https://c.animaapp.com/m8kgn877BAe2ZS/img/group-47959.png"
-              />
-            </div>
-
-            {/* Message icon */}
-            <div className="relative">
-              <img
-                className="w-5 h-[19px]"
-                alt="Message icon"
-                src="https://c.animaapp.com/m8kgn877BAe2ZS/img/vector-2.svg"
-              />
-              <img
-                className="absolute w-1 h-0.5 top-[22px] left-[8px]"
-                alt="Message indicator"
-                src="https://c.animaapp.com/m8kgn877BAe2ZS/img/vector-5.svg"
-              />
-            </div>
-
-            {/* Profile icon */}
-            <img
-              className="w-[27px] h-[22px]"
-              alt="Profile icon"
-              src="https://c.animaapp.com/m8kgn877BAe2ZS/img/vector-3.svg"
+        {/* Right side controls */}
+        <div className="ml-auto flex items-center gap-8">
+          <form onSubmit={handleSearch} className="relative">
+            <Input
+              type="text"
+              placeholder="Search stocks..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pr-10 bg-[#2d2d2d] border-none text-white"
             />
-          </div>
-
-          {/* Logout icon */}
-          <LogOutIcon className="w-[21px] h-[21px] text-white" />
+            <Button
+              type="submit"
+              variant="ghost"
+              className="absolute right-0 top-0 h-full"
+            >
+              <SearchIcon className="h-4 w-4 text-gray-400" />
+            </Button>
+          </form>
+          <NotificationSystem />
+          <Button variant="ghost" onClick={() => navigate('/profile')}>
+            <UserIcon className="h-5 w-5 text-white" />
+          </Button>
+          <Button variant="ghost" onClick={handleLogout}>
+            <LogOutIcon className="h-5 w-5 text-white" />
+          </Button>
         </div>
       </div>
     </header>

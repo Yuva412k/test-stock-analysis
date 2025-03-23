@@ -1,7 +1,6 @@
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import React from "react";
 import { Card, CardContent } from "../../components/ui/card";
-import { HeaderSection } from "./sections/HeaderSection/HeaderSection";
 import { InvestmentPerformanceSection } from "./sections/InvestmentPerformanceSection/InvestmentPerformanceSection";
 import { InvestmentTabsSection } from "./sections/InvestmentTabsSection/InvestmentTabsSection";
 import { PortfolioOverviewSection } from "./sections/PortfolioOverviewSection";
@@ -48,7 +47,7 @@ export const Portfolio = (): JSX.Element => {
   return (
     <div className="w-full bg-[#171616] rounded-[30px] overflow-hidden">
       {/* Header Section */}
-      <HeaderSection />
+      {/* <HeaderSection /> */}
 
       {/* Sector Analysis Section */}
       <SectorAnalysisSection />

@@ -30,10 +30,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await api.post('/login', { username, password });
-      localStorage.setItem('token', response.data.token);
+      // const response = await api.post('/login', { username, password });
+      // localStorage.setItem('token', response.data.token);
+      // setIsAuthenticated(true);
+      // setUser(response.data.user);
+      localStorage.setItem('token', "random");
       setIsAuthenticated(true);
-      setUser(response.data.user);
+      setUser({id: 1, name: "Random"});
     } catch (error) {
       throw new Error('Invalid credentials');
     }
